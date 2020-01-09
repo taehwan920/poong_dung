@@ -3,18 +3,13 @@ import requests
 
 URL = "http://koreawqi.go.kr/index_web.jsp"
 
-def get_page():
+def get_temperature():
     req_url = requests.get(URL)
-    soup_url = BeautifulSoup(req_url.text, "html.parser")
-    return soup_url
+    soup = BeautifulSoup(req_url.text, 'html.parser')
+    parent = soup.find("tr", {"class" : "site_S01001"})
+    temper = parent.findChild("td", {"class" : "avg1"})
+    tem_text = temper.get_text(strip=True).strip()
+    print(tem_text)
+    return {"temperature" : tem_text}
 
-def get_temperature(html):
-    parent = html.find("tr",{"class":"site_S01001"})
-    temper = parent.find("td",{"class":"avg1"})
-    tem_text = temper.strip()
-    return tem_text
-
-def get_temper_data():
-    tem_data = get_temperature(get_page)
-    return tem_data
-    
+get_temperature()
