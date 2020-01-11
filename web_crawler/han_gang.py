@@ -1,14 +1,18 @@
-# from bs4 import BeautifulSoup
-# import requests
+from selenium import webdriver
+from bs4 import BeautifulSoup
+import time
 
-# URL = "http://koreawqi.go.kr/index_web.jsp"
+URL = "http://koreawqi.go.kr/index_web.jsp"
+path = r"C:\Users\taehw\AppData\Local\Programs\Python\Python37\chromedriver.exe"
 
-# def get_temperature():
-#     req_url = requests.get(URL)
-#     soup = BeautifulSoup(req_url.text, 'html.parser')
-#     parent = soup.find("tr", {"class" : "site_S01001"})
-#     temper = parent.findChild("td", {"class" : "avg1"})
-#     tem_text = temper.get_text(strip=True).strip()
-#     return {"temperature" : tem_text}
+def get_temperature():
+    driver = webdriver.Chrome(path)
+    driver.get(URL)
+    driver.implicitly_wait(3)
+    req = driver.page_source
+    soup = BeautifulSoup(req, 'html.parser')
+    temper = soup.select('tr.site_S01001 > td.avg1')
+    print(temper)
+    return {"temperature" : temper}
 
-# get_temperature()
+get_temperature()
