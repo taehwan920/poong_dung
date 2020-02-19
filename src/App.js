@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from "axios";
+import WaterInfo from './WaterInfo';
 // import './App.css';
 
 class App extends React.Component {
@@ -8,17 +9,28 @@ class App extends React.Component {
         waterDatas: []
     };
     getWaterDatas = async () => {
-        const waterDatas = await axios.get("http://hangang.dkserver.wo.tc/")
-
+        const waterDatas = await axios.get("http://openapi.seoul.go.kr:8088/566261794c7461653638534c656f6d/json/WPOSInformationTime/2/7/");
+        this.setState({ waterDatas, isLoading: false });
     }
     componentDidMount() {
-        this.getWaterDatas();
+        this.getWaterDatas()
     }
     render() {
-        const { isLoading } = this.state;
+        const { isLoading, waterDatas } = this.state;
         return (
-            <h1>{isLoading ? "Loading..." : "오늘 한강 수온은?"}</h1>
-        )
+            <div>
+                {isLoading
+                    ? "Loading..."
+                    : waterDatas.map(WaterInfo => (
+                        <WaterInfo
+                            site={WaterInfo.SITE_ID}
+                            date={WaterInfo.MSR_DATE}
+                            time={WaterInfo.MSR_TIME}
+                            temp={WaterInfo.W_TEMP}
+                        />
+                    ))}
+            </div>
+        );
     }
 }
 export default App;
